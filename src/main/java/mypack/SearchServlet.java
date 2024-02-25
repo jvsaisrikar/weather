@@ -13,18 +13,29 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
+import java.net.InetAddress;
 
 @WebServlet("/SearchServlet")
 public class SearchServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-      
+    	
         // Dummy authentication logic (replace with your database authentication logic)
         if (true) {
             // Dummy location (replace with database retrieval logic)
             String location = (String) request.getParameter("locationValue"); 
+            if ("current".equals(location)) {
+            	String ipServiceUrl = "http://checkip.amazonaws.com";
+                URL url = new URL(ipServiceUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
 
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                location = reader.readLine();
+                reader.close();
+
+            }
             // Fetch weather data based on the location
             JSONObject weatherData = getWeatherData(location);
             JSONObject weatherForcastData = weatherForcastData(location);
