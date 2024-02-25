@@ -58,7 +58,7 @@ public class LoginServlet extends HttpServlet {
         // Dummy authentication logic (replace with your database authentication logic)
         if ("adamgilchrist.anish@gmail.com".equals(email) && "pool".equals(password)) {
             // Dummy location (replace with database retrieval logic)
-//            String location = "Santa Clara California"; 
+ 
             String ipServiceUrl = "http://checkip.amazonaws.com";
             URL url = new URL(ipServiceUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();

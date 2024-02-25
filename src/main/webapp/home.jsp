@@ -68,7 +68,7 @@ body {
 	background-color: #007bff; /* Blue color for toggler icon */
 }
 
-.left-half, .right-half {
+.left-half,.middle, .right-half {
 	padding: 20px;
 	height: 84vh;
 }
@@ -168,7 +168,7 @@ body {
 
 		<div class="row">
 			<div
-				class="col-md-3 left-half night-background d-flex align-items-center justify-content-center"
+				class="col-md-2 left-half night-background d-flex align-items-center justify-content-center"
 				style="background-image: url('<%= image %>')">
 				<!-- Location box -->
 				<div class="details-box">
@@ -191,7 +191,127 @@ body {
 			<!-- Right Column -->
 			<!-- Right Column -->
 
+			<div class="col-md-5 middle">
+				<h4 >Hourly Weather Forecast</h4>
+				<div id="hourlyCollapse" style="width:570px;height:300px;margin-top:-25px"
+					aria-labelledby="hourlyHeading"s>
+					<div class="card-body">
+						<canvas id="hourlyChart" width="600" height="300"></canvas>
+					
+					<%  JSONArray hourlyData = forecastdayArray.optJSONObject(0).optJSONArray("hour");
+					String jsonString = hourlyData.toString();
+            		%>
+               
+						<script>
+                // Parse JSON data
+                var hourlyWeatherData =  JSON.parse('<%= jsonString %>');
+                
+                // Extract time labels and temperature values from hourlyWeatherData
+                var timeLabels = []; // Array to store time labels
+                var temperatureValues = []; // Array to store temperature values
+                
+                // Iterate over hourlyWeatherData to populate timeLabels and temperatureValues
+                <%
+					for (int i = 0; i < forecastdayArray.optJSONObject(0).optJSONArray("hour").length(); i++) {
+				%>
+				temperatureValues.push( <%=forecastdayArray.optJSONObject(0).optJSONArray("hour").optJSONObject(i).getFloat("temp_f")%>);
+				timeLabels.push( <%=forecastdayArray.optJSONObject(0).optJSONArray("hour").optJSONObject(i).getString("time").substring(11,13)%>);
+				console.log(temperatureValues)	;
+				console.log(timeLabels)	;
+				<%
+				}
+				%>
+                
+                // Render bar graph
+                var ctx = document.getElementById('hourlyChart').getContext('2d');
+                var myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: timeLabels,
+                        datasets: [{
+                            label: 'Temperature (°F)',
+                            data: temperatureValues,
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)', // Customize bar color
+                            borderColor: 'rgba(255, 99, 132, 1)', // Customize border color
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: 
+                        {   
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }],
+                           
+                        }
+                    },
+                   
+                });
+            </script>
+					</div>
+				</div>
+				<h4>Hourly Cloud Percentage</h4>
+				<div id="hourlyCloudCollapse" style="width:570px;height:300px;margin-top:-25px"
+					aria-labelledby="hourlyHeading"s>
+					<div class="card-body">
+						<canvas id="hourlyCloudChart" width="600" height="300"></canvas>
+					
+					<%  JSONArray hourlyCloudData = forecastdayArray.optJSONObject(0).optJSONArray("hour");
+					String jsonCloudString = hourlyData.toString();
+            		%>
+               
+						<script>
+                // Parse JSON data
+                var hourlyCloudWeatherData =  JSON.parse('<%= jsonCloudString %>');
+                
+                // Extract time labels and temperature values from hourlyWeatherData
+                var timeCloudLabels = []; // Array to store time labels
+                var temperatureCloudValues = []; // Array to store temperature values
+                
+                // Iterate over hourlyWeatherData to populate timeLabels and temperatureValues
+                <%
+					for (int i = 0; i < forecastdayArray.optJSONObject(0).optJSONArray("hour").length(); i++) {
+				%>
+				temperatureCloudValues.push( <%=forecastdayArray.optJSONObject(0).optJSONArray("hour").optJSONObject(i).getFloat("cloud")%>);
+				timeCloudLabels.push( <%=forecastdayArray.optJSONObject(0).optJSONArray("hour").optJSONObject(i).getString("time").substring(11,13)%>);
+			
+				<%
+				}
+				%>
+                
+                // Render bar graph
+                var ctxCloud = document.getElementById('hourlyCloudChart').getContext('2d');
+                var myChart = new Chart(ctxCloud, {
+                    type: 'line',
+                    data: {
+                        labels: timeLabels,
+                        datasets: [{
+                            label: 'Cloud Percentage',
+                            data: temperatureValues,
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)', // Customize bar color
+                            borderColor: 'rgba(255, 99, 132, 1)', // Customize border color
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: 
+                        {   
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
+                        }
+                    }
+                });
+            </script>
+					</div>
+				</div>
+			</div>
 			<div class="col-md-5 right-half">
+			
 				<h4>Hourly Weather Forecast for next 2 days</h4>
 				<div id="accordion" style="width: 570px">
 					<!-- Option 1: Today -->
@@ -217,11 +337,13 @@ body {
 									<thead>
 										<tr>
 											<th scope="col">Time</th>
-											<th scope="col">Temperature (°C)</th>
-											<th scope="col">Wind Speed Kmph</th>
+											<th scope="col">Condition</th>
+											<th scope="col">Temperature (°F)</th>
+											<th scope="col">Wind Speed Mph</th>
 											<th scope="col">Humidity</th>
-											<th scope="col">Chance of Rain %</th>
-											<th scope="col">Condition %</th>
+											<th scope="col">Precipitation (mm)</th>
+											<th scope="col">Atmospheric Pressure (in)</th>
+											
 										</tr>
 									</thead>
 									<tbody>
@@ -230,13 +352,15 @@ body {
 										%>
 										<tr>
 											<td><%=forecastdayArray.optJSONObject(1).optJSONArray("hour").optJSONObject(i).getString("time").substring(10)%></td>
-											<td><%=forecastdayArray.optJSONObject(1).optJSONArray("hour").optJSONObject(i).getFloat("temp_c")%></td>
-											<td><%=forecastdayArray.optJSONObject(1).optJSONArray("hour").optJSONObject(i).getFloat("wind_kph")%></td>
-											<td><%=forecastdayArray.optJSONObject(1).optJSONArray("hour").optJSONObject(i).getFloat("humidity")%></td>
-											<td><%=forecastdayArray.optJSONObject(1).optJSONArray("hour").optJSONObject(i).getFloat("chance_of_rain")%></td>
 											<td><img style="height: 30px; width: 30px"
 												src=<%=forecastdayArray.optJSONObject(1).optJSONArray("hour").optJSONObject(i).optJSONObject("condition")
 		.getString("icon")%>></td>
+											<td><%=forecastdayArray.optJSONObject(1).optJSONArray("hour").optJSONObject(i).getFloat("temp_f")%></td>
+											<td><%=forecastdayArray.optJSONObject(1).optJSONArray("hour").optJSONObject(i).getFloat("wind_mph")%></td>
+											<td><%=forecastdayArray.optJSONObject(1).optJSONArray("hour").optJSONObject(i).getFloat("humidity")%></td>
+											<td><%=forecastdayArray.optJSONObject(1).optJSONArray("hour").optJSONObject(i).getFloat("precip_mm")%></td>
+											<td><%=forecastdayArray.optJSONObject(1).optJSONArray("hour").optJSONObject(i).getFloat("pressure_in")%></td>
+											
 
 										</tr>
 										<%
@@ -269,11 +393,13 @@ body {
 									<thead>
 										<tr>
 											<th scope="col">Time</th>
-											<th scope="col">Temperature (°C)</th>
-											<th scope="col">Wind Speed Kmph</th>
+											<th scope="col">Condition </th>
+											<th scope="col">Temperature (°F)</th>
+											<th scope="col">Wind Speed Mph</th>
 											<th scope="col">Humidity</th>
-											<th scope="col">Chance of Rain %</th>
-											<th scope="col">Condition %</th>
+											<th scope="col">Precipitation (mm)</th>
+											<th scope="col">Atmospheric Pressure (in)</th>
+											
 										</tr>
 									</thead>
 									<tbody>
@@ -282,13 +408,15 @@ body {
 										%>
 										<tr>
 											<td><%=forecastdayArray.optJSONObject(2).optJSONArray("hour").optJSONObject(i).getString("time").substring(10)%></td>
-											<td><%=forecastdayArray.optJSONObject(2).optJSONArray("hour").optJSONObject(i).getFloat("temp_c")%></td>
-											<td><%=forecastdayArray.optJSONObject(2).optJSONArray("hour").optJSONObject(i).getFloat("wind_kph")%></td>
-											<td><%=forecastdayArray.optJSONObject(2).optJSONArray("hour").optJSONObject(i).getFloat("humidity")%></td>
-											<td><%=forecastdayArray.optJSONObject(2).optJSONArray("hour").optJSONObject(i).getFloat("chance_of_rain")%></td>
 											<td><img style="height: 30px; width: 30px"
 												src=<%=forecastdayArray.optJSONObject(2).optJSONArray("hour").optJSONObject(i).optJSONObject("condition")
 		.getString("icon")%>></td>
+											<td><%=forecastdayArray.optJSONObject(2).optJSONArray("hour").optJSONObject(i).getFloat("temp_f")%></td>
+											<td><%=forecastdayArray.optJSONObject(2).optJSONArray("hour").optJSONObject(i).getFloat("wind_mph")%></td>
+											<td><%=forecastdayArray.optJSONObject(2).optJSONArray("hour").optJSONObject(i).getFloat("humidity")%></td>
+											<td><%=forecastdayArray.optJSONObject(2).optJSONArray("hour").optJSONObject(i).getFloat("precip_mm")%></td>
+											<td><%=forecastdayArray.optJSONObject(2).optJSONArray("hour").optJSONObject(i).getFloat("pressure_in")%></td>
+											
 										</tr>
 										<%
 										}
@@ -298,117 +426,9 @@ body {
 							</div>
 						</div>
 					</div>
-
-					<!-- Option 3: Week -->
-					<%-- <div class="card">
-						<div class="card-header" id="headingThree">
-							<h5 class="mb-0">
-								<button class="btn btn-black collapsed" data-toggle="collapse"
-									data-target="#collapseThree" aria-expanded="false"
-									aria-controls="collapseThree">
-									Day After
-									<%=forecastdayArray.optJSONObject(3).optString("date")%></button>
-							</h5>
-						</div>
-						<div id="collapseThree" class="collapse"
-							aria-labelledby="headingThree" data-parent="#accordion">
-							<div class="card-body"
-								style="max-height: 350px; overflow-y: auto;">
-								<table
-									class="table table-dark table-bordered table-striped table-hover">
-									<thead>
-										<tr>
-											<th scope="col">Time</th>
-											<th scope="col">Temperature (°C)</th>
-											<th scope="col">Feels like (°C)</th>
-											<th scope="col">Wind Speed Kmph</th>
-											<th scope="col">Humidity</th>
-											<th scope="col">Chance of Rain %</th>
-											<th scope="col">Condition %</th>
-										</tr>
-									</thead>
-									<tbody>
-										<%
-										for (int i = 0; i < forecastdayArray.optJSONObject(3).optJSONArray("hour").length(); i++) {
-										%>
-										<tr>
-											<td><%=forecastdayArray.optJSONObject(3).optJSONArray("hour").optJSONObject(i).getString("time").substring(10)%></td>
-											<td><%=forecastdayArray.optJSONObject(3).optJSONArray("hour").optJSONObject(i).getFloat("temp_c")%></td>
-											<td><%=forecastdayArray.optJSONObject(3).optJSONArray("hour").optJSONObject(i).getFloat("feelslike_c")%></td>
-											<td><%=forecastdayArray.optJSONObject(3).optJSONArray("hour").optJSONObject(i).getFloat("wind_kph")%></td>
-											<td><%=forecastdayArray.optJSONObject(3).optJSONArray("hour").optJSONObject(i).getFloat("humidity")%></td>
-											<td><%=forecastdayArray.optJSONObject(3).optJSONArray("hour").optJSONObject(i).getFloat("chance_of_rain")%></td>
-											<td><img style="height: 30px; width: 30px"
-												src=<%=forecastdayArray.optJSONObject(3).optJSONArray("hour").optJSONObject(i).optJSONObject("condition")
-		.getString("icon")%>></td>
-										</tr>
-										<%
-										}
-										%>
-									</tbody>
-								</table>
-							</div>
-						</div>
-					</div> --%>
 				</div>
-				<h4 style="margin-top:40px">Today's hourly weather forecast</h4>
-				<div id="hourlyCollapse" style="width:570px;height:400px;margin-top:-25px"
-					aria-labelledby="hourlyHeading"s>
-					<div class="card-body">
-						<canvas id="hourlyChart" width="600" height="400"></canvas>
-					
-					<%  JSONArray hourlyData = forecastdayArray.optJSONObject(0).optJSONArray("hour");
-					String jsonString = hourlyData.toString();
-            		%>
-               
-						<script>
-                // Parse JSON data
-                var hourlyWeatherData =  JSON.parse('<%= jsonString %>');
-                
-                // Extract time labels and temperature values from hourlyWeatherData
-                var timeLabels = []; // Array to store time labels
-                var temperatureValues = []; // Array to store temperature values
-                
-                // Iterate over hourlyWeatherData to populate timeLabels and temperatureValues
-                <%
-					for (int i = 0; i < forecastdayArray.optJSONObject(0).optJSONArray("hour").length(); i++) {
-				%>
-				temperatureValues.push( <%=forecastdayArray.optJSONObject(0).optJSONArray("hour").optJSONObject(i).getFloat("temp_c")%>);
-				timeLabels.push( <%=forecastdayArray.optJSONObject(0).optJSONArray("hour").optJSONObject(i).getString("time").substring(11,13)%>);
-				console.log(temperatureValues)	;
-				console.log(timeLabels)	;
-				<%
-				}
-				%>
-                
-                // Render bar graph
-                var ctx = document.getElementById('hourlyChart').getContext('2d');
-                var myChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: timeLabels,
-                        datasets: [{
-                            label: 'Temperature (°C)',
-                            data: temperatureValues,
-                            backgroundColor: 'rgba(255, 99, 132, 0.2)', // Customize bar color
-                            borderColor: 'rgba(255, 99, 132, 1)', // Customize border color
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        scales: 
-                        {   
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: true
-                                }
-                            }]
-                        }
-                    }
-                });
-            </script>
-					</div>
-				</div>
+			
+			</div>
 			</div>
 
 		</div>
