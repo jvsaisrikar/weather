@@ -124,13 +124,7 @@ body {
 							aria-label="Search">
 						<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
 					</form>
-					<li class="nav-item">
-						<div class="custom-control custom-switch" style="margin-top: 8px">
-							<input type="checkbox" class="custom-control-input "
-								id="alertSwitch"> <label style="color: white"
-								class="custom-control-label " for="alertSwitch">Alerts</label>
-						</div>
-					</li>
+					
 					<li class="nav-item"><a class="btn " style="color: white"
 						href="#">Sign Out</a></li>
 				</ul>
