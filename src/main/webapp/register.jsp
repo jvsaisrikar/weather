@@ -192,7 +192,7 @@ h1>a {
 	margin-bottom: 30px;
 }
 
-.login-btn {
+.signup-btn {
 	padding: 13px 30px;
 	background-color: #000;
 	border-radius: 0;
@@ -240,8 +240,8 @@ h1>a {
 		</div>
 		<div class="col-sm-6 col-md-5 form-section">
 			<div class="login-wrapper">
-				<h2 class="login-title">Sign In</h2>
-				<form action="LoginServlet" method="post">
+				<h2 class="login-title">Create an Account</h2>
+				<form action="RegisterServlet" method="post">
 					<div class="form-group">
 						<label for="email" class="sr-only">Email</label> <input
 							type="email" name="email" id="email" class="form-control"
@@ -252,13 +252,18 @@ h1>a {
 							type="password" name="password" id="password"
 							class="form-control" placeholder="Password">
 					</div>
+					<div class="form-group mb-3">
+						<label for="location" class="sr-only">Preferred Location</label> <input
+							type="text" name="location" id="location"
+							class="form-control" placeholder="Enter City / Zip">
+					</div>
 					<div class="d-flex justify-content-between align-items-center mb-5">
-						<input name="login" id="login" class="btn login-btn" type="submit"
-							value="Login">
+						<input name="signup" id="signup" class="btn signup-btn" type="submit"
+							value="Sign Up"> 
 					</div>
 				</form>
 				<p class="login-wrapper-footer-text">
-					Need an account? <a href="register.jsp" class="text-reset">Signup here</a>
+					Already have an account? <a href="index.jsp" class="text-reset">Login here</a>
 				</p>
 			</div>
 		</div>
