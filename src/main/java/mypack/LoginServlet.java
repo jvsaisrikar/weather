@@ -72,7 +72,7 @@ public class LoginServlet extends HttpServlet {
             // Authentication failed
             // Redirect back to the login page with an error message or display error message on the same page
             //TODO proper error handling
-            response.sendRedirect("error.jsp");
+            response.sendRedirect("errorLogin.jsp");
         }
     }
     

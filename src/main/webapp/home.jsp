@@ -68,7 +68,7 @@ body {
 	background-color: #007bff; /* Blue color for toggler icon */
 }
 
-.left-half,.middle, .right-half {
+.left-half, .middle, .right-half {
 	padding: 20px;
 	height: 84vh;
 }
@@ -124,9 +124,33 @@ body {
 							aria-label="Search">
 						<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
 					</form>
-					
+
 					<li class="nav-item"><a class="btn " style="color: white"
-						href="#">Sign Out</a></li>
+						href="SignoutServlet" data-toggle="modal"
+						data-target="#confirmationModal">Sign Out</a></li>
+					<div class="modal fade" id="confirmationModal" tabindex="-1"
+						role="dialog" aria-labelledby="confirmationModalLabel"
+						aria-hidden="true">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
+									<button type="button" class="close" data-dismiss="modal"
+										aria-label="Close">
+										<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body">Are you sure you want to logout
+									from ?</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary"
+										data-dismiss="modal">Cancel</button>
+									
+										<a class="btn btn-success" href="SignoutServlet">Confirm</a>
+								</div>
+							</div>
+						</div>
+					</div>
 				</ul>
 			</div>
 		</div>
@@ -192,16 +216,17 @@ body {
 			<!-- Right Column -->
 
 			<div class="col-md-5 middle">
-				<h4 >Hourly Weather Forecast</h4>
-				<div id="hourlyCollapse" style="width:570px;height:300px;margin-top:-25px"
-					aria-labelledby="hourlyHeading"s>
+				<h4>Hourly Weather Forecast</h4>
+				<div id="hourlyCollapse"
+					style="width: 570px; height: 300px; margin-top: -25px"
+					aria-labelledby="hourlyHeading" s>
 					<div class="card-body">
 						<canvas id="hourlyChart" width="600" height="300"></canvas>
-					
-					<%  JSONArray hourlyData = forecastdayArray.optJSONObject(0).optJSONArray("hour");
+
+						<%  JSONArray hourlyData = forecastdayArray.optJSONObject(0).optJSONArray("hour");
 					String jsonString = hourlyData.toString();
             		%>
-               
+
 						<script>
                 // Parse JSON data
                 var hourlyWeatherData =  JSON.parse('<%= jsonString %>');
@@ -253,15 +278,16 @@ body {
 					</div>
 				</div>
 				<h4>Hourly Cloud Percentage</h4>
-				<div id="hourlyCloudCollapse" style="width:570px;height:300px;margin-top:-25px"
-					aria-labelledby="hourlyHeading"s>
+				<div id="hourlyCloudCollapse"
+					style="width: 570px; height: 300px; margin-top: -25px"
+					aria-labelledby="hourlyHeading" s>
 					<div class="card-body">
 						<canvas id="hourlyCloudChart" width="600" height="300"></canvas>
-					
-					<%  JSONArray hourlyCloudData = forecastdayArray.optJSONObject(0).optJSONArray("hour");
+
+						<%  JSONArray hourlyCloudData = forecastdayArray.optJSONObject(0).optJSONArray("hour");
 					String jsonCloudString = hourlyData.toString();
             		%>
-               
+
 						<script>
                 // Parse JSON data
                 var hourlyCloudWeatherData =  JSON.parse('<%= jsonCloudString %>');
@@ -311,7 +337,7 @@ body {
 				</div>
 			</div>
 			<div class="col-md-5 right-half">
-			
+
 				<h4>Hourly Weather Forecast for next 2 days</h4>
 				<div id="accordion" style="width: 570px">
 					<!-- Option 1: Today -->
@@ -341,9 +367,9 @@ body {
 											<th scope="col">Temperature (°F)</th>
 											<th scope="col">Wind Speed Mph</th>
 											<th scope="col">Humidity</th>
-											<th scope="col">Precipitation (mm)</th>
 											<th scope="col">Atmospheric Pressure (in)</th>
-											
+											<th scope="col">Precipitation (mm)</th>
+
 										</tr>
 									</thead>
 									<tbody>
@@ -358,9 +384,9 @@ body {
 											<td><%=forecastdayArray.optJSONObject(1).optJSONArray("hour").optJSONObject(i).getFloat("temp_f")%></td>
 											<td><%=forecastdayArray.optJSONObject(1).optJSONArray("hour").optJSONObject(i).getFloat("wind_mph")%></td>
 											<td><%=forecastdayArray.optJSONObject(1).optJSONArray("hour").optJSONObject(i).getFloat("humidity")%></td>
-											<td><%=forecastdayArray.optJSONObject(1).optJSONArray("hour").optJSONObject(i).getFloat("precip_mm")%></td>
+
 											<td><%=forecastdayArray.optJSONObject(1).optJSONArray("hour").optJSONObject(i).getFloat("pressure_in")%></td>
-											
+											<td><%=forecastdayArray.optJSONObject(1).optJSONArray("hour").optJSONObject(i).getFloat("precip_mm")%></td>
 
 										</tr>
 										<%
@@ -393,13 +419,14 @@ body {
 									<thead>
 										<tr>
 											<th scope="col">Time</th>
-											<th scope="col">Condition </th>
+											<th scope="col">Condition</th>
 											<th scope="col">Temperature (°F)</th>
 											<th scope="col">Wind Speed Mph</th>
 											<th scope="col">Humidity</th>
-											<th scope="col">Precipitation (mm)</th>
 											<th scope="col">Atmospheric Pressure (in)</th>
-											
+											<th scope="col">Precipitation (mm)</th>
+
+
 										</tr>
 									</thead>
 									<tbody>
@@ -413,10 +440,12 @@ body {
 		.getString("icon")%>></td>
 											<td><%=forecastdayArray.optJSONObject(2).optJSONArray("hour").optJSONObject(i).getFloat("temp_f")%></td>
 											<td><%=forecastdayArray.optJSONObject(2).optJSONArray("hour").optJSONObject(i).getFloat("wind_mph")%></td>
+
 											<td><%=forecastdayArray.optJSONObject(2).optJSONArray("hour").optJSONObject(i).getFloat("humidity")%></td>
-											<td><%=forecastdayArray.optJSONObject(2).optJSONArray("hour").optJSONObject(i).getFloat("precip_mm")%></td>
 											<td><%=forecastdayArray.optJSONObject(2).optJSONArray("hour").optJSONObject(i).getFloat("pressure_in")%></td>
-											
+											<td><%=forecastdayArray.optJSONObject(2).optJSONArray("hour").optJSONObject(i).getFloat("precip_mm")%></td>
+
+
 										</tr>
 										<%
 										}
@@ -427,12 +456,12 @@ body {
 						</div>
 					</div>
 				</div>
-			
-			</div>
-			</div>
 
+			</div>
 		</div>
-		<%
+
+	</div>
+	<%
 		} else {
 		out.println("Error: Location or current weather data not found.");
 		}
