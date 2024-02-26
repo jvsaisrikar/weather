@@ -224,6 +224,8 @@ h1>a {
 <link
 	href="https://fonts.googleapis.com/css2?family=Karla:wght@200;300;400;500&display=swap"
 	rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.0.1"></script>
+	
 </head>
 <div class="container-fluid">
 	<div class="row">
@@ -240,25 +242,10 @@ h1>a {
 		</div>
 		<div class="col-sm-6 col-md-5 form-section">
 			<div class="login-wrapper">
-				<h2 class="login-title">Sign In</h2>
-				<form action="LoginServlet" method="post">
-					<div class="form-group">
-						<label for="email" class="sr-only">Email</label> <input
-							type="email" name="email" id="email" class="form-control"
-							placeholder="Email">
-					</div>
-					<div class="form-group mb-3">
-						<label for="password" class="sr-only">Password</label> <input
-							type="password" name="password" id="password"
-							class="form-control" placeholder="Password">
-					</div>
-					<div class="d-flex justify-content-between align-items-center mb-5">
-						<input name="login" id="login" class="btn login-btn" type="submit"
-							value="Login">
-					</div>
-				</form>
+				<h2 class="login-title">Creation Unsuccessful!</h2>
+				
 				<p class="login-wrapper-footer-text">
-					Need an account? <a href="register.jsp" class="text-reset">Signup here</a>
+					Try Again? <a href="register.jsp" class="text-reset">Sign Up here</a>
 				</p>
 			</div>
 		</div>
