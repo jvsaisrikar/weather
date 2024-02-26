@@ -41,16 +41,19 @@ public class LoginServlet extends HttpServlet {
 
 
         if (user != null) {
-            String ipServiceUrl = "http://checkip.amazonaws.com";
-            URL url = new URL(ipServiceUrl);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
+            //show user's stored location in homepage when user logins
+            String location = user.getString("location");
+            //if location in user db is empty display current location
+            if (location.isEmpty()) {
+                String ipServiceUrl = "http://checkip.amazonaws.com";
+                URL url = new URL(ipServiceUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String location ; 
-            location = reader.readLine();
-            reader.close();
-
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                location = reader.readLine();
+                reader.close();
+            }
             // Fetch weather data based on the location
             JSONObject weatherData = getWeatherData(location);
             JSONObject weatherForcastData = weatherForcastData(location);
