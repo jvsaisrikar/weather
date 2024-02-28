@@ -1,6 +1,5 @@
 package mypack.controller;
 
-import mypack.model.WeatherData;
 import mypack.service.WeatherService;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -27,11 +26,10 @@ public class SearchServlet extends HttpServlet {
             location = getCurrentLocation();
         }
 
-        JSONObject weatherDataJson = weatherService.getWeatherData(location);
         JSONObject weatherForecastDataJson = weatherService.getWeatherForecastData(location);
         // Create a JSON object with username and weather details
         JSONObject json = new JSONObject();
-        json.put("weather", weatherDataJson);
+        json.put("weather", weatherForecastDataJson);
         json.put("weatherForecast", weatherForecastDataJson);
         // Set JSON object as attribute in request scope
         request.setAttribute("userData", json);
