@@ -3,29 +3,21 @@ package mypack.model;
 import org.json.JSONObject;
 
 public class WeatherData {
-    private JSONObject currentWeather;
-    private JSONObject forecastWeather;
+    private final JSONObject weatherDetails;
 
-    // Constructor
-    public WeatherData(JSONObject currentWeather, JSONObject forecastWeather) {
-        this.currentWeather = currentWeather;
-        this.forecastWeather = forecastWeather;
-    }
-
-    // Getters and setters
-    public JSONObject getCurrentWeather() {
-        return currentWeather;
+    public WeatherData() {
+        this.weatherDetails = new JSONObject();
     }
 
     public void setCurrentWeather(JSONObject currentWeather) {
-        this.currentWeather = currentWeather;
-    }
-
-    public JSONObject getForecastWeather() {
-        return forecastWeather;
+        this.weatherDetails.put("weather", currentWeather);
     }
 
     public void setForecastWeather(JSONObject forecastWeather) {
-        this.forecastWeather = forecastWeather;
+        this.weatherDetails.put("weatherForecast", forecastWeather);
+    }
+
+    public JSONObject getWeatherDetails() {
+        return weatherDetails;
     }
 }

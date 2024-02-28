@@ -11,7 +11,6 @@ public class WeatherService {
     private final String API_KEY = "2f61d4b600974f67a95235409243001";
 
     public JSONObject getWeatherForecastData(String location) throws IOException {
-        System.out.println("Calling getWeatherForecastData in WeatherService.java");
         String baseUrl = "https://api.weatherapi.com/v1/forecast.json";
         return fetchWeatherData(baseUrl, location);
     }
@@ -20,7 +19,6 @@ public class WeatherService {
         location = location.replace(" ", "%20");
         //3-day forecast hardcoded for UI display
         String requestUrl = baseUrl + "?key=" + API_KEY + "&q=" + location + "&days=3";
-        System.out.println("Request URL: " + requestUrl);
         URL url = new URL(requestUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");

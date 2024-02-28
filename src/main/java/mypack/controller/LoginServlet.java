@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mypack.model.UserModel;
+import mypack.model.WeatherData;
 import mypack.service.WeatherService;
 import mypack.service.UserService;
 import org.json.JSONObject;
@@ -22,13 +23,15 @@ public class LoginServlet extends HttpServlet {
 
         if (user != null) {
             WeatherService weatherService = new WeatherService();
-            JSONObject weatherForecastData = weatherService.getWeatherForecastData(user.getLocation());
-            // Create a JSON object with username and weather details
-            JSONObject json = new JSONObject();
-            json.put("weather", weatherForecastData);
-            json.put("weatherForecast", weatherForecastData);
+            JSONObject weatherDataCurrentAndForecast = weatherService.getWeatherForecastData(user.getLocation());
+
+            // Create and set data in WeatherData object
+            WeatherData weatherData = new WeatherData();
+            weatherData.setCurrentWeather(weatherDataCurrentAndForecast);
+            weatherData.setForecastWeather(weatherDataCurrentAndForecast);
+
             // Set JSON object as attribute in request scope
-            request.setAttribute("userData", json);
+            request.setAttribute("userData", weatherData.getWeatherDetails());
             request.getRequestDispatcher("home.jsp").forward(request, response);
         } else {
             response.sendRedirect("errorLogin.jsp");
