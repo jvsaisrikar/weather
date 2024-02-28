@@ -22,11 +22,10 @@ public class LoginServlet extends HttpServlet {
 
         if (user != null) {
             WeatherService weatherService = new WeatherService();
-            JSONObject weatherData = weatherService.getWeatherData(user.getLocation());
             JSONObject weatherForecastData = weatherService.getWeatherForecastData(user.getLocation());
             // Create a JSON object with username and weather details
             JSONObject json = new JSONObject();
-            json.put("weather", weatherData);
+            json.put("weather", weatherForecastData);
             json.put("weatherForecast", weatherForecastData);
             // Set JSON object as attribute in request scope
             request.setAttribute("userData", json);
