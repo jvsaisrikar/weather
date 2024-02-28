@@ -1,4 +1,4 @@
-package mypack;
+package mypack.controller;
 
 import com.mongodb.MongoWriteException;
 import com.mongodb.client.MongoClients;
@@ -18,7 +18,7 @@ public class RegisterServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        
+
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         String location = request.getParameter("location");
@@ -42,7 +42,7 @@ public class RegisterServlet extends HttpServlet {
             // Redirect to the success page
             response.sendRedirect("success.jsp");
         } catch (MongoWriteException e) {
-        	if (e.getError().getCode() == 11000) {
+            if (e.getError().getCode() == 11000) {
                 // This unique email index is set in DB.
                 // Handle the duplicate key error (e.g., a user with the same email already exists).
                 request.setAttribute("error", "A user with this email already exists.");
