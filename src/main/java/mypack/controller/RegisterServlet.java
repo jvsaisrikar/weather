@@ -5,6 +5,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoCollection;
+import mypack.model.UserModel;
 import org.bson.Document;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,9 +20,12 @@ public class RegisterServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
-        String location = request.getParameter("location");
+        // Create a new UserModel object from request parameters
+        UserModel user = new UserModel(
+                request.getParameter("email"),
+                request.getParameter("password"),
+                request.getParameter("location")
+        );
 
         MongoClient mongoClient = null;
         try {
@@ -30,11 +34,11 @@ public class RegisterServlet extends HttpServlet {
             MongoDatabase database = mongoClient.getDatabase("weatherApp");
             MongoCollection<Document> users = database.getCollection("User");
 
-            // Create a new user document
+            // Create a new user document using the UserModel object
             Document newUser = new Document()
-                    .append("email", email)
-                    .append("password", password)
-                    .append("location", location);
+                    .append("email", user.getEmail())
+                    .append("password", user.getPassword())
+                    .append("location", user.getLocation());
 
             // Insert the document into the collection
             users.insertOne(newUser);
@@ -43,13 +47,12 @@ public class RegisterServlet extends HttpServlet {
             response.sendRedirect("success.jsp");
         } catch (MongoWriteException e) {
             if (e.getError().getCode() == 11000) {
-                // This unique email index is set in DB.
                 // Handle the duplicate key error (e.g., a user with the same email already exists).
                 request.setAttribute("error", "A user with this email already exists.");
                 response.sendRedirect("error.jsp");
             } else {
                 // Handle other write errors
-                throw new ServletException();
+                throw new ServletException(e);
             }
         } finally {
             // Always close the MongoDB client
