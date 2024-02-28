@@ -1,4 +1,4 @@
-package mypack;
+package mypack.controller;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -27,7 +27,4 @@ public class SignoutServlet extends HttpServlet {
 
         response.sendRedirect("index.jsp"); 
 	}
-
-
-
 }

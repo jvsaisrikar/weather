@@ -160,10 +160,10 @@ body {
 	<div class="container-fluid">
 		<%
 		Object userDataObj = request.getAttribute("userData");
-		if (userDataObj != null && userDataObj instanceof JSONObject) {
+		if (userDataObj instanceof JSONObject) {
 			JSONObject userData = (JSONObject) userDataObj;
 			JSONObject weatherData = userData.optJSONObject("weather");
-			JSONObject weatherForcastData = userData.optJSONObject("weatherForcast");
+			JSONObject weatherForcastData = userData.optJSONObject("weatherForecast");
 			if (weatherData != null && weatherForcastData != null) {
 				JSONObject location = weatherData.optJSONObject("location");
 				JSONObject current = weatherData.optJSONObject("current");
@@ -172,7 +172,7 @@ body {
 				JSONArray forecastdayArray = forcastData.optJSONArray("forecastday");
 				if (location != null && current != null) {
 					
-					String time =location.optString("localtime").substring(11);
+					String time = location.optString("localtime").substring(11);
 					String hour = time.substring(0,2);
 					String image = "";
 					if(hour.endsWith(":")){
