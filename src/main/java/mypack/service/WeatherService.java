@@ -29,7 +29,7 @@ public class WeatherService {
     // Overloaded fetchWeatherData method that also accepts a date
     private JSONObject fetchWeatherData(String baseUrl, String location, String date) throws IOException {
         location = location.replace(" ", "%20");
-        String requestUrl = baseUrl + "?key=" + API_KEY + "&q=" + location + "&days=3";
+        String requestUrl = baseUrl + "?key=" + API_KEY + "&q=" + location + "&days=3" + "&alerts=yes";
 
         if (!date.isEmpty()) {
             requestUrl += "&dt=" + date;
