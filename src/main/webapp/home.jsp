@@ -162,8 +162,8 @@ body {
 		Object userDataObj = request.getAttribute("userData");
 		if (userDataObj instanceof JSONObject) {
 			JSONObject userData = (JSONObject) userDataObj;
-			JSONObject weatherData = userData.optJSONObject("weather");
-			JSONObject weatherForcastData = userData.optJSONObject("weatherForecast");
+			JSONObject weatherData = userData.optJSONObject("currentAndForecastWeather");
+			JSONObject weatherForcastData = userData.optJSONObject("currentAndForecastWeather");
 			if (weatherData != null && weatherForcastData != null) {
 				JSONObject location = weatherData.optJSONObject("location");
 				JSONObject current = weatherData.optJSONObject("current");

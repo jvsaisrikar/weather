@@ -15,10 +15,26 @@ public class WeatherService {
         return fetchWeatherData(baseUrl, location);
     }
 
+    // Overloaded method to get weather data with an additional date parameter
+    public JSONObject getWeatherForecastData(String location, String date) throws IOException {
+        String baseUrl = "https://api.weatherapi.com/v1/forecast.json";
+        return fetchWeatherData(baseUrl, location, date);
+    }
+
     private JSONObject fetchWeatherData(String baseUrl, String location) throws IOException {
+        // Call the overloaded method with an empty date
+        return fetchWeatherData(baseUrl, location, "");
+    }
+
+    // Overloaded fetchWeatherData method that also accepts a date
+    private JSONObject fetchWeatherData(String baseUrl, String location, String date) throws IOException {
         location = location.replace(" ", "%20");
-        //3-day forecast hardcoded for UI display
         String requestUrl = baseUrl + "?key=" + API_KEY + "&q=" + location + "&days=3";
+
+        if (!date.isEmpty()) {
+            requestUrl += "&dt=" + date;
+        }
+
         URL url = new URL(requestUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
@@ -30,7 +46,8 @@ public class WeatherService {
             jsonResponse.append(line);
         }
         reader.close();
-
+        //TODO remove this
+        System.out.println(jsonResponse.toString());
         return new JSONObject(jsonResponse.toString());
     }
 }

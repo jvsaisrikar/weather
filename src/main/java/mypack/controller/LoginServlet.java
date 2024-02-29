@@ -27,8 +27,7 @@ public class LoginServlet extends HttpServlet {
 
             // Create and set data in WeatherData object
             WeatherData weatherData = new WeatherData();
-            weatherData.setCurrentWeather(weatherDataCurrentAndForecast);
-            weatherData.setForecastWeather(weatherDataCurrentAndForecast);
+            weatherData.setCurrentAndForecastWeather(weatherDataCurrentAndForecast);
 
             // Set JSON object as attribute in request scope
             request.setAttribute("userData", weatherData.getWeatherDetails());
