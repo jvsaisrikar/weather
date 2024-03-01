@@ -242,7 +242,7 @@ h1>a {
 		</div>
 		<div class="col-sm-6 col-md-5 form-section">
 			<div class="login-wrapper">
-				<h2 class="login-title">Invalid location entered, Please choose a valid location</h2>
+				<h2 class="login-title">Invalid location entered, Please enter a valid location</h2>
 
 <%--				<p class="login-wrapper-footer-text">--%>
 <%--					 <a href="index.jsp" class="text-reset">Back to Homepage</a>--%>

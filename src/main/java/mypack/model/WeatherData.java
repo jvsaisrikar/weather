@@ -3,7 +3,7 @@ package mypack.model;
 import org.json.JSONObject;
 
 public class WeatherData {
-    private final JSONObject weatherDetails;
+    private JSONObject weatherDetails;
 
     public WeatherData() {
         this.weatherDetails = new JSONObject();

@@ -17,8 +17,7 @@ public class WeatherService {
 
     private JSONObject fetchWeatherData(String baseUrl, String location) throws IOException {
         location = location.replace(" ", "%20");
-        //3-day forecast hardcoded for UI display
-        String requestUrl = baseUrl + "?key=" + API_KEY + "&q=" + location + "&days=3";
+        String requestUrl = baseUrl + "?key=" + API_KEY + "&q=" + location + "&days=14" + "&alerts=yes";
         URL url = new URL(requestUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
