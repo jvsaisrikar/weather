@@ -15,28 +15,39 @@ import org.mindrot.jbcrypt.BCrypt;
 
 @WebServlet("/LoginServlet")
 public class LoginServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        UserService userService = new UserService();
-        UserModel user = userService.findUserByEmail(email);
+        try {
+            UserService userService = new UserService();
+            UserModel user = userService.findUserByEmail(email);
 
-        // Verify hashed password
-        if (user != null && BCrypt.checkpw(password, user.getPassword())) {
-            WeatherService weatherService = new WeatherService();
-            JSONObject weatherDataCurrentAndForecast = weatherService.getWeatherForecastData(user.getLocation());
+            if (user != null && BCrypt.checkpw(password, user.getPassword())) {
+                WeatherService weatherService = new WeatherService();
+                JSONObject weatherDataCurrentAndForecast = weatherService.getWeatherForecastData(user.getLocation());
 
-            // Create and set data in WeatherData object
-            WeatherData weatherData = new WeatherData();
-            weatherData.setCurrentWeather(weatherDataCurrentAndForecast);
-            weatherData.setForecastWeather(weatherDataCurrentAndForecast);
+                // Create and set data in WeatherData object
+                WeatherData weatherData = new WeatherData();
+                weatherData.setCurrentWeather(weatherDataCurrentAndForecast);
+                weatherData.setForecastWeather(weatherDataCurrentAndForecast);
 
-            // Set JSON object as attribute in request scope
-            request.setAttribute("userData", weatherData.getWeatherDetails());
-            request.getRequestDispatcher("home.jsp").forward(request, response);
-        } else {
+                // Set JSON object as attribute in request scope
+                request.setAttribute("userData", weatherData.getWeatherDetails());
+                //split if @ exists and assign to email
+                String emailModified = null;
+                if (email != null && email.contains("@")) {
+                    emailModified = email.split("@")[0];
+                }
+                request.setAttribute("username", emailModified);
+                request.getRequestDispatcher("home.jsp").forward(request, response);
+            } else {
+                response.sendRedirect("errorLogin.jsp");
+            }
+        } catch (Exception e) {
             response.sendRedirect("errorLogin.jsp");
         }
     }
 }
+
