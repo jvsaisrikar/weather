@@ -11,6 +11,7 @@ import mypack.model.WeatherData;
 import mypack.service.WeatherService;
 import mypack.service.UserService;
 import org.json.JSONObject;
+import org.mindrot.jbcrypt.BCrypt;
 
 @WebServlet("/LoginServlet")
 public class LoginServlet extends HttpServlet {
@@ -19,9 +20,10 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("password");
 
         UserService userService = new UserService();
-        UserModel user = userService.findUserByEmailAndPassword(email, password);
+        UserModel user = userService.findUserByEmail(email);
 
-        if (user != null) {
+        // Verify hashed password
+        if (user != null && BCrypt.checkpw(password, user.getPassword())) {
             WeatherService weatherService = new WeatherService();
             JSONObject weatherDataCurrentAndForecast = weatherService.getWeatherForecastData(user.getLocation());
 
