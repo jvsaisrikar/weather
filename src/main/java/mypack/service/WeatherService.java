@@ -8,7 +8,7 @@ import java.net.URL;
 import org.json.JSONObject;
 
 public class WeatherService {
-    private final String API_KEY = "2f61d4b600974f67a95235409243001";
+    private final String API_KEY = "2fa411c4da1c46bd96e80436240103";
 
     public JSONObject getWeatherForecastData(String location) throws IOException {
         String baseUrl = "https://api.weatherapi.com/v1/forecast.json";

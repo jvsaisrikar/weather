@@ -119,7 +119,7 @@ body {
 				<ul class="navbar-nav ml-auto">
 					<form action="SearchServlet" method="post"
 						class="form-inline my-2 my-lg-0" style="margin-right: 30px">
-						<input class="form-control mr-sm-2" type="text"
+						<input required class="form-control mr-sm-2" type="text"
 							name="locationValue" placeholder="Enter Zip / City-State"
 							aria-label="Search">
 						<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
