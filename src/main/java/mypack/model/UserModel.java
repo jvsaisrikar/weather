@@ -25,4 +25,8 @@ public class UserModel {
         location = location.replace(" ", "%20");
         return location;
     }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
 }

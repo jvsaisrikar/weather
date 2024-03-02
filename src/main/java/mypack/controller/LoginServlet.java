@@ -10,6 +10,7 @@ import mypack.model.UserModel;
 import mypack.model.WeatherData;
 import mypack.service.WeatherService;
 import mypack.service.UserService;
+import mypack.service.LocationService;
 import org.json.JSONObject;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -25,6 +26,11 @@ public class LoginServlet extends HttpServlet {
             UserModel user = userService.findUserByEmail(email);
 
             if (user != null && BCrypt.checkpw(password, user.getPassword())) {
+                if (user.getLocation().isEmpty()) {
+                    //if empty get current location and set it
+                    user.setLocation(LocationService.getCurrentLocation());
+                }
+
                 WeatherService weatherService = new WeatherService();
                 JSONObject weatherDataCurrentAndForecast = weatherService.getWeatherForecastData(user.getLocation());
 
