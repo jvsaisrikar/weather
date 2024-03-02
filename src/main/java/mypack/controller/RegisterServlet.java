@@ -6,6 +6,8 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoCollection;
 import mypack.model.UserModel;
+import mypack.service.UserService;
+import mypack.service.UserServiceImpl;
 import org.bson.Document;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,6 +21,8 @@ import org.mindrot.jbcrypt.BCrypt;
 public class RegisterServlet extends HttpServlet {
     private static long serialVersionUID = 1L;
 
+    private UserService userService = new UserServiceImpl();
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String hashedPassword = BCrypt.hashpw(request.getParameter("password"), BCrypt.gensalt());
         // Create a new UserModel object from request parameters
@@ -28,41 +32,24 @@ public class RegisterServlet extends HttpServlet {
                 request.getParameter("location")
         );
 
-        MongoClient mongoClient = null;
         try {
-            // Connect to MongoDB
-            mongoClient = MongoClients.create("mongodb://localhost:27017");
-            MongoDatabase database = mongoClient.getDatabase("weatherApp");
-            MongoCollection<Document> users = database.getCollection("User");
-
-            // Create a new user document using the UserModel object
-            Document newUser = new Document()
-                    .append("email", user.getEmail())
-                    .append("password", user.getPassword())
-                    .append("location", user.getLocation());
-
-            // Insert the document into the collection
-            users.insertOne(newUser);
-
-            // Redirect to the success page
+            userService.saveUser(user);
             response.sendRedirect("success.jsp");
-        } catch (MongoWriteException e) {
-            if (e.getError().getCode() == 11000) {
-                // Handle the duplicate key error (e.g., a user with the same email already exists).
-                request.setAttribute("error", "A user with this email already exists.");
-                response.sendRedirect("error.jsp");
-            } else {
-                // Handle other write errors
-                throw new ServletException(e);
-            }
         } catch (Exception e) {
+            // Log the exception details as needed
+            handleRegistrationException(e, request, response);
+        }
+    }
+
+    private void handleRegistrationException(Exception e, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        if (e instanceof MongoWriteException && ((MongoWriteException) e).getError().getCode() == 11000) {
+            // Duplicate key error
+            request.setAttribute("error", "A user with this email already exists.");
+            request.getRequestDispatcher("error.jsp").forward(request, response);
+        } else {
             // General error handling
-            response.sendRedirect("error.jsp");
-        } finally {
-            // closing MongoDB Client
-            if (mongoClient != null) {
-                mongoClient.close();
-            }
+            request.setAttribute("error", "An error occurred during registration. Please try again.");
+            request.getRequestDispatcher("error.jsp").forward(request, response);
         }
     }
 }
