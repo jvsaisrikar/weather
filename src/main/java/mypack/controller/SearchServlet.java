@@ -5,6 +5,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.ServletException;
 import java.io.IOException;
 import org.json.JSONObject;
@@ -25,7 +26,8 @@ public class SearchServlet extends HttpServlet {
         if ("current".equals(location)) {
             location = getCurrentLocation();
         }
-
+        HttpSession session = request.getSession();
+        String username = (String) session.getAttribute("username");
         JSONObject weatherForecastDataJson = weatherService.getWeatherForecastData(location);
         // Create a JSON object with username and weather details
         JSONObject json = new JSONObject();
@@ -33,6 +35,7 @@ public class SearchServlet extends HttpServlet {
         json.put("weatherForecast", weatherForecastDataJson);
         // Set JSON object as attribute in request scope
         request.setAttribute("userData", json);
+        request.setAttribute("username", username);
         request.getRequestDispatcher("home.jsp").forward(request, response);
     }
 

@@ -1,8 +1,8 @@
 package mypack.model;
 
 public class UserModel {
-    private final String email;
-    private final String password;
+    private  String email;
+    private  String password;
     private String location;
 
     // Constructor

@@ -70,13 +70,14 @@ body {
 
 .left-half, .middle, .right-half {
 	padding: 20px;
-	height: 84vh;
+	height: 90vh;
 }
 
 .details-box {
 	background-color: rgba(255, 255, 255, 0.8); /* Transparent background */
 	border-radius: 10px;
-	padding: 20px;
+	padding: 30px;
+	/* margin:-10px; */
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 	text-align: center;
 }
@@ -85,7 +86,7 @@ body {
 	/* background-image: url('mr.gif'); */
 	/* Replace 'night.jpg' with the path to your night background image */
 	background-size: cover;
-	max-height: 82vh;
+	max-height: 85vh;
 	background-position: center;
 	border-radius: 25px;
 }
@@ -104,7 +105,7 @@ body {
 			<a class="navbar-brand" href="#"><img src="logo.png" alt="Logo"></a>
 			<!-- Brand name in the center -->
 			<div class="navbar-text mx-auto">
-				<span class="navbar-brand mb-0 h1">SkyInsight</span>
+				<span class="navbar-brand mb-0 h1">SkyInsight </span>
 			</div>
 			<!-- Toggler button -->
 			<button class="navbar-toggler" type="button" data-toggle="collapse"
@@ -117,8 +118,16 @@ body {
 			<!-- Navbar links -->
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav ml-auto">
+
+					<form action="SearchServlet" method="post" style="margin:10px">
+						<!-- Hidden input field with value "current" -->
+						<input type="hidden" name="locationValue" value="current">
+						<!-- Button to submit the form -->
+						<input style="padding: 0px;margin: 0px;background: transparent;border: 0;color: white;" type="submit" value="Current Location">
+					</form>
 					<form action="SearchServlet" method="post"
-						class="form-inline my-2 my-lg-0" style="margin-right: 30px">
+						class="form-inline my-2 my-lg-0" style="margin-right: 20px">
+						
 						<input class="form-control mr-sm-2" type="text"
 							name="locationValue" placeholder="Enter Zip / City-State"
 							aria-label="Search">
@@ -140,13 +149,16 @@ body {
 										<span aria-hidden="true">&times;</span>
 									</button>
 								</div>
-								<div class="modal-body">Are you sure you want to logout
-									from ?</div>
+								<div class="modal-body">
+									Are you sure you want to logout from
+									<%=session.getAttribute("username")%>
+									?
+								</div>
 								<div class="modal-footer">
 									<button type="button" class="btn btn-secondary"
 										data-dismiss="modal">Cancel</button>
-									
-										<a class="btn btn-success" href="SignoutServlet">Confirm</a>
+
+									<a class="btn btn-success" href="SignoutServlet">Confirm</a>
 								</div>
 							</div>
 						</div>
@@ -167,45 +179,48 @@ body {
 			if (weatherData != null && weatherForcastData != null) {
 				JSONObject location = weatherData.optJSONObject("location");
 				JSONObject current = weatherData.optJSONObject("current");
+				JSONObject alerts = weatherData.optJSONObject("alerts");
 				JSONObject condition = current.optJSONObject("condition");
 				JSONObject forcastData = weatherForcastData.optJSONObject("forecast");
 				JSONArray forecastdayArray = forcastData.optJSONArray("forecastday");
 				if (location != null && current != null) {
-					
-					String time = location.optString("localtime").substring(11);
-					String hour = time.substring(0,2);
-					String image = "";
-					if(hour.endsWith(":")){
-						hour = "0"+ hour;
-						hour = hour.substring(0, 2);
-					}
-					
-					int timeInInt = Integer.parseInt(hour);
-				    // Determine the time of day
-				    
-				    if (timeInInt >= 6 && timeInInt < 18) {
-				        image = "mr.gif";
-				    } else {
-				    	image = "giphy (1).gif";
-				    }
+
+			String time = location.optString("localtime").substring(11);
+			String hour = time.substring(0, 2);
+			String image = "";
+			if (hour.endsWith(":")) {
+				hour = "0" + hour;
+				hour = hour.substring(0, 2);
+			}
+
+			int timeInInt = Integer.parseInt(hour);
+			// Determine the time of day
+
+			if (timeInInt >= 6 && timeInInt < 18) {
+				image = "mr.gif";
+			} else {
+				image = "giphy (1).gif";
+			}
 		%>
 
 		<div class="row">
 			<div
 				class="col-md-2 left-half night-background d-flex align-items-center justify-content-center"
-				style="background-image: url('<%= image %>')">
+				style="background-image: url('<%=image%>')">
 				<!-- Location box -->
 				<div class="details-box">
-
+					<p>
+						Hey 
+						<a href="#"><%=session.getAttribute("username")%></a>
+					</p>
+					<p>
 					<p>
 						Location:
 						<%=location.optString("name")%></p>
 					<p>
-						Date/Time:
 						<%=location.optString("localtime")%></p>
 					<p>
 						Temperature:
-						<%=current.optString("temp_c")%>°C /
 						<%=current.optString("temp_f")%>°F
 					</p>
 
@@ -216,36 +231,33 @@ body {
 			<!-- Right Column -->
 
 			<div class="col-md-5 middle">
-				<h4>Hourly Weather Forecast</h4>
+				<h5>Hourly Weather Forecast</h5>
 				<div id="hourlyCollapse"
 					style="width: 570px; height: 300px; margin-top: -25px"
-					aria-labelledby="hourlyHeading" s>
+					aria-labelledby="hourlyHeading">
 					<div class="card-body">
 						<canvas id="hourlyChart" width="600" height="300"></canvas>
 
-						<%  JSONArray hourlyData = forecastdayArray.optJSONObject(0).optJSONArray("hour");
-					String jsonString = hourlyData.toString();
-            		%>
+						<%
+						JSONArray hourlyData = forecastdayArray.optJSONObject(0).optJSONArray("hour");
+						String jsonString = hourlyData.toString();
+						%>
 
 						<script>
                 // Parse JSON data
-                var hourlyWeatherData =  JSON.parse('<%= jsonString %>');
+                var hourlyWeatherData =  JSON.parse('<%=jsonString%>');
                 
                 // Extract time labels and temperature values from hourlyWeatherData
                 var timeLabels = []; // Array to store time labels
                 var temperatureValues = []; // Array to store temperature values
                 
                 // Iterate over hourlyWeatherData to populate timeLabels and temperatureValues
-                <%
-					for (int i = 0; i < forecastdayArray.optJSONObject(0).optJSONArray("hour").length(); i++) {
-				%>
+                <%for (int i = 0; i < forecastdayArray.optJSONObject(0).optJSONArray("hour").length(); i++) {%>
 				temperatureValues.push( <%=forecastdayArray.optJSONObject(0).optJSONArray("hour").optJSONObject(i).getFloat("temp_f")%>);
-				timeLabels.push( <%=forecastdayArray.optJSONObject(0).optJSONArray("hour").optJSONObject(i).getString("time").substring(11,13)%>);
+				timeLabels.push( <%=forecastdayArray.optJSONObject(0).optJSONArray("hour").optJSONObject(i).getString("time").substring(11, 13)%>);
 				console.log(temperatureValues)	;
 				console.log(timeLabels)	;
-				<%
-				}
-				%>
+				<%}%>
                 
                 // Render bar graph
                 var ctx = document.getElementById('hourlyChart').getContext('2d');
@@ -277,201 +289,512 @@ body {
             </script>
 					</div>
 				</div>
-				<h4>Hourly Cloud Percentage</h4>
+				<h5>Hourly Cloud Percentage</h5>
 				<div id="hourlyCloudCollapse"
 					style="width: 570px; height: 300px; margin-top: -25px"
-					aria-labelledby="hourlyHeading" s>
+					aria-labelledby="hourlyCHeading">
 					<div class="card-body">
 						<canvas id="hourlyCloudChart" width="600" height="300"></canvas>
 
-						<%  JSONArray hourlyCloudData = forecastdayArray.optJSONObject(0).optJSONArray("hour");
-					String jsonCloudString = hourlyData.toString();
-            		%>
+						<%
+						JSONArray hourlyCloudData = forecastdayArray.optJSONObject(0).optJSONArray("hour");
+						String jsonCloudString = hourlyCloudData.toString();
+						%>
 
 						<script>
                 // Parse JSON data
-                var hourlyCloudWeatherData =  JSON.parse('<%= jsonCloudString %>');
-                
-                // Extract time labels and temperature values from hourlyWeatherData
-                var timeCloudLabels = []; // Array to store time labels
-                var temperatureCloudValues = []; // Array to store temperature values
-                
-                // Iterate over hourlyWeatherData to populate timeLabels and temperatureValues
-                <%
-					for (int i = 0; i < forecastdayArray.optJSONObject(0).optJSONArray("hour").length(); i++) {
-				%>
-				temperatureCloudValues.push( <%=forecastdayArray.optJSONObject(0).optJSONArray("hour").optJSONObject(i).getFloat("cloud")%>);
-				timeCloudLabels.push( <%=forecastdayArray.optJSONObject(0).optJSONArray("hour").optJSONObject(i).getString("time").substring(11,13)%>);
-			
-				<%
-				}
-				%>
-                
-                // Render bar graph
-                var ctxCloud = document.getElementById('hourlyCloudChart').getContext('2d');
-                var myChart = new Chart(ctxCloud, {
-                    type: 'line',
-                    data: {
-                        labels: timeLabels,
-                        datasets: [{
-                            label: 'Cloud Percentage',
-                            data: temperatureValues,
-                            backgroundColor: 'rgba(255, 99, 132, 0.2)', // Customize bar color
-                            borderColor: 'rgba(255, 99, 132, 1)', // Customize border color
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        scales: 
-                        {   
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: true
-                                }
-                            }]
-                        }
-                    }
-                });
-            </script>
+                var hourlyCloudWeatherData =  JSON.parse('<%=jsonCloudString%>');
+
+							// Extract time labels and temperature values from hourlyWeatherData
+							var timeCloudLabels = []; // Array to store time labels
+							var temperatureCloudValues = []; // Array to store temperature values
+
+							// Iterate over hourlyWeatherData to populate timeLabels and temperatureValues
+						<%for (int i = 0; i < forecastdayArray.optJSONObject(0).optJSONArray("hour").length(); i++) {%>
+							temperatureCloudValues
+									.push(
+						<%=forecastdayArray.optJSONObject(0).optJSONArray("hour").optJSONObject(i).getFloat("cloud")%>
+							);
+							timeCloudLabels
+									.push(
+						<%=forecastdayArray.optJSONObject(0).optJSONArray("hour").optJSONObject(i).getString("time").substring(11, 13)%>
+							);
+						<%}%>
+							// Render bar graph
+							var ctxCloud = document.getElementById('hourlyCloudChart').getContext('2d');
+							var myChart = new Chart(
+									ctxCloud,
+									{
+										type : 'line',
+										data : {
+											labels : timeLabels,
+											datasets : [ {
+												label : 'Cloud Percentage',
+												data : temperatureValues,
+												backgroundColor : 'rgba(255, 99, 132, 0.2)', // Customize bar color
+												borderColor : 'rgba(255, 99, 132, 1)', // Customize border color
+												borderWidth : 1
+											} ]
+										},
+										options : {
+											scales : {
+												yAxes : [ {
+													ticks : {
+														beginAtZero : true
+													}
+												} ]
+											}
+										}
+									});
+						</script>
 					</div>
 				</div>
 			</div>
-			<div class="col-md-5 right-half">
+			<div class="col-md-5 right-half"
+				style="display: flex; flex-direction: column; justify-content: space-between">
+				<div>
+					<h5>Hourly Weather Forecast for the following week</h5>
+					<div id="accordion" style="width: 570px">
+						<!-- Option 1: Today -->
+						<div class="card">
+							<div class="card-header" id="headingOne">
+								<h5 class="mb-0">
+									<button class="btn btn-black" data-toggle="collapse"
+										data-target="#collapseOne" aria-expanded="true"
+										aria-controls="collapseOne">
+										
+										<%=forecastdayArray.optJSONObject(0).optString("date")%>: Today
+									</button>
+								</h5>
+							</div>
 
-				<h4>Hourly Weather Forecast for next 2 days</h4>
-				<div id="accordion" style="width: 570px">
-					<!-- Option 1: Today -->
-					<div class="card">
-						<div class="card-header" id="headingOne">
-							<h5 class="mb-0">
-								<button class="btn btn-black" data-toggle="collapse"
-									data-target="#collapseOne" aria-expanded="true"
-									aria-controls="collapseOne">
-									Tomorrow:
-									<%=forecastdayArray.optJSONObject(1).optString("date")%>
-								</button>
-							</h5>
-						</div>
+							<div id="collapseOne" class="collapse"
+								aria-labelledby="headingOne" data-parent="#accordion">
+								<div class="card-body"
+									style="max-height: 350px; overflow-y: auto;">
 
-						<div id="collapseOne" class="collapse"
-							aria-labelledby="headingOne" data-parent="#accordion">
-							<div class="card-body"
-								style="max-height: 350px; overflow-y: auto;">
+									<table
+										class="table table-dark table-bordered table-striped table-hover">
+										<thead>
+											<tr>
+												<th scope="col">Time</th>
+												<th scope="col">Condition</th>
+												<th scope="col">Temperature (°F)</th>
+												<th scope="col">Wind Speed Mph</th>
+												<th scope="col">Humidity</th>
+												<th scope="col">Atmospheric Pressure (in)</th>
+												<th scope="col">Precipitation (mm)</th>
 
-								<table
-									class="table table-dark table-bordered table-striped table-hover">
-									<thead>
-										<tr>
-											<th scope="col">Time</th>
-											<th scope="col">Condition</th>
-											<th scope="col">Temperature (°F)</th>
-											<th scope="col">Wind Speed Mph</th>
-											<th scope="col">Humidity</th>
-											<th scope="col">Atmospheric Pressure (in)</th>
-											<th scope="col">Precipitation (mm)</th>
-
-										</tr>
-									</thead>
-									<tbody>
-										<%
-										for (int i = 0; i < forecastdayArray.optJSONObject(1).optJSONArray("hour").length(); i++) {
-										%>
-										<tr>
-											<td><%=forecastdayArray.optJSONObject(1).optJSONArray("hour").optJSONObject(i).getString("time").substring(10)%></td>
-											<td><img style="height: 30px; width: 30px"
-												src=<%=forecastdayArray.optJSONObject(1).optJSONArray("hour").optJSONObject(i).optJSONObject("condition")
+											</tr>
+										</thead>
+										<tbody>
+											<%
+											for (int i = 0; i < forecastdayArray.optJSONObject(0).optJSONArray("hour").length(); i++) {
+											%>
+											<tr>
+												<td><%=forecastdayArray.optJSONObject(0).optJSONArray("hour").optJSONObject(i).getString("time").substring(10)%></td>
+												<td><img style="height: 30px; width: 30px"
+													src=<%=forecastdayArray.optJSONObject(0).optJSONArray("hour").optJSONObject(i).optJSONObject("condition")
 		.getString("icon")%>></td>
-											<td><%=forecastdayArray.optJSONObject(1).optJSONArray("hour").optJSONObject(i).getFloat("temp_f")%></td>
-											<td><%=forecastdayArray.optJSONObject(1).optJSONArray("hour").optJSONObject(i).getFloat("wind_mph")%></td>
-											<td><%=forecastdayArray.optJSONObject(1).optJSONArray("hour").optJSONObject(i).getFloat("humidity")%></td>
+												<td><%=forecastdayArray.optJSONObject(0).optJSONArray("hour").optJSONObject(i).getFloat("temp_f")%></td>
+												<td><%=forecastdayArray.optJSONObject(0).optJSONArray("hour").optJSONObject(i).getFloat("wind_mph")%></td>
+												<td><%=forecastdayArray.optJSONObject(0).optJSONArray("hour").optJSONObject(i).getFloat("humidity")%></td>
 
-											<td><%=forecastdayArray.optJSONObject(1).optJSONArray("hour").optJSONObject(i).getFloat("pressure_in")%></td>
-											<td><%=forecastdayArray.optJSONObject(1).optJSONArray("hour").optJSONObject(i).getFloat("precip_mm")%></td>
+												<td><%=forecastdayArray.optJSONObject(0).optJSONArray("hour").optJSONObject(i).getFloat("pressure_in")%></td>
+												<td><%=forecastdayArray.optJSONObject(0).optJSONArray("hour").optJSONObject(i).getFloat("precip_mm")%></td>
 
-										</tr>
-										<%
-										}
-										%>
-									</tbody>
-								</table>
+											</tr>
+											<%
+											}
+											%>
+										</tbody>
+									</table>
+								</div>
 							</div>
 						</div>
-					</div>
+						<div class="card">
+							<div class="card-header" id="headingTwo">
+								<h5 class="mb-0">
+									<button class="btn btn-black" data-toggle="collapse"
+										data-target="#collapseTwo" aria-expanded="true"
+										aria-controls="#collapseTwo">
+										<%=forecastdayArray.optJSONObject(1).optString("date")%>
+									</button>
+								</h5>
+							</div>
 
-					<!-- Option 2: Tomorrow -->
-					<div class="card">
-						<div class="card-header" id="headingTwo">
-							<h5 class="mb-0">
-								<button class="btn btn-black collapsed" data-toggle="collapse"
-									data-target="#collapseTwo" aria-expanded="false"
-									aria-controls="collapseTwo">
-									Day After Tomorrow
-									<%=forecastdayArray.optJSONObject(2).optString("date")%></button>
+							<div id="collapseTwo" class="collapse"
+								aria-labelledby="headingTwo" data-parent="#accordion">
+								<div class="card-body"
+									style="max-height: 350px; overflow-y: auto;">
 
-							</h5>
-						</div>
-						<div id="collapseTwo" class="collapse"
-							aria-labelledby="headingTwo" data-parent="#accordion">
-							<div class="card-body"
-								style="max-height: 350px; overflow-y: auto;">
-								<table
-									class="table table-dark table-bordered table-striped table-hover">
-									<thead>
-										<tr>
-											<th scope="col">Time</th>
-											<th scope="col">Condition</th>
-											<th scope="col">Temperature (°F)</th>
-											<th scope="col">Wind Speed Mph</th>
-											<th scope="col">Humidity</th>
-											<th scope="col">Atmospheric Pressure (in)</th>
-											<th scope="col">Precipitation (mm)</th>
+									<table
+										class="table table-dark table-bordered table-striped table-hover">
+										<thead>
+											<tr>
+												<th scope="col">Time</th>
+												<th scope="col">Condition</th>
+												<th scope="col">Temperature (°F)</th>
+												<th scope="col">Wind Speed Mph</th>
+												<th scope="col">Humidity</th>
+												<th scope="col">Atmospheric Pressure (in)</th>
+												<th scope="col">Precipitation (mm)</th>
 
-
-										</tr>
-									</thead>
-									<tbody>
-										<%
-										for (int i = 0; i < forecastdayArray.optJSONObject(2).optJSONArray("hour").length(); i++) {
-										%>
-										<tr>
-											<td><%=forecastdayArray.optJSONObject(2).optJSONArray("hour").optJSONObject(i).getString("time").substring(10)%></td>
-											<td><img style="height: 30px; width: 30px"
-												src=<%=forecastdayArray.optJSONObject(2).optJSONArray("hour").optJSONObject(i).optJSONObject("condition")
+											</tr>
+										</thead>
+										<tbody>
+											<%
+											for (int i = 0; i < forecastdayArray.optJSONObject(1).optJSONArray("hour").length(); i++) {
+											%>
+											<tr>
+												<td><%=forecastdayArray.optJSONObject(1).optJSONArray("hour").optJSONObject(i).getString("time").substring(10)%></td>
+												<td><img style="height: 30px; width: 30px"
+													src=<%=forecastdayArray.optJSONObject(1).optJSONArray("hour").optJSONObject(i).optJSONObject("condition")
 		.getString("icon")%>></td>
-											<td><%=forecastdayArray.optJSONObject(2).optJSONArray("hour").optJSONObject(i).getFloat("temp_f")%></td>
-											<td><%=forecastdayArray.optJSONObject(2).optJSONArray("hour").optJSONObject(i).getFloat("wind_mph")%></td>
+												<td><%=forecastdayArray.optJSONObject(1).optJSONArray("hour").optJSONObject(i).getFloat("temp_f")%></td>
+												<td><%=forecastdayArray.optJSONObject(1).optJSONArray("hour").optJSONObject(i).getFloat("wind_mph")%></td>
+												<td><%=forecastdayArray.optJSONObject(1).optJSONArray("hour").optJSONObject(i).getFloat("humidity")%></td>
 
-											<td><%=forecastdayArray.optJSONObject(2).optJSONArray("hour").optJSONObject(i).getFloat("humidity")%></td>
-											<td><%=forecastdayArray.optJSONObject(2).optJSONArray("hour").optJSONObject(i).getFloat("pressure_in")%></td>
-											<td><%=forecastdayArray.optJSONObject(2).optJSONArray("hour").optJSONObject(i).getFloat("precip_mm")%></td>
+												<td><%=forecastdayArray.optJSONObject(1).optJSONArray("hour").optJSONObject(i).getFloat("pressure_in")%></td>
+												<td><%=forecastdayArray.optJSONObject(1).optJSONArray("hour").optJSONObject(i).getFloat("precip_mm")%></td>
+
+											</tr>
+											<%
+											}
+											%>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<div class="card">
+							<div class="card-header" id="headingThree">
+								<h5 class="mb-0">
+									<button class="btn btn-black" data-toggle="collapse"
+										data-target="#collapseThree" aria-expanded="true"
+										aria-controls="#collapseThree">
+										<%=forecastdayArray.optJSONObject(2).optString("date")%>
+									</button>
+								</h5>
+							</div>
+
+							<div id="collapseThree" class="collapse"
+								aria-labelledby="headingThree" data-parent="#accordion">
+								<div class="card-body"
+									style="max-height: 350px; overflow-y: auto;">
+
+									<table
+										class="table table-dark table-bordered table-striped table-hover">
+										<thead>
+											<tr>
+												<th scope="col">Time</th>
+												<th scope="col">Condition</th>
+												<th scope="col">Temperature (°F)</th>
+												<th scope="col">Wind Speed Mph</th>
+												<th scope="col">Humidity</th>
+												<th scope="col">Atmospheric Pressure (in)</th>
+												<th scope="col">Precipitation (mm)</th>
+
+											</tr>
+										</thead>
+										<tbody>
+											<%
+											for (int i = 0; i < forecastdayArray.optJSONObject(2).optJSONArray("hour").length(); i++) {
+											%>
+											<tr>
+												<td><%=forecastdayArray.optJSONObject(2).optJSONArray("hour").optJSONObject(i).getString("time").substring(10)%></td>
+												<td><img style="height: 30px; width: 30px"
+													src=<%=forecastdayArray.optJSONObject(2).optJSONArray("hour").optJSONObject(i).optJSONObject("condition")
+		.getString("icon")%>></td>
+												<td><%=forecastdayArray.optJSONObject(2).optJSONArray("hour").optJSONObject(i).getFloat("temp_f")%></td>
+												<td><%=forecastdayArray.optJSONObject(2).optJSONArray("hour").optJSONObject(i).getFloat("wind_mph")%></td>
+												<td><%=forecastdayArray.optJSONObject(2).optJSONArray("hour").optJSONObject(i).getFloat("humidity")%></td>
+
+												<td><%=forecastdayArray.optJSONObject(2).optJSONArray("hour").optJSONObject(i).getFloat("pressure_in")%></td>
+												<td><%=forecastdayArray.optJSONObject(2).optJSONArray("hour").optJSONObject(i).getFloat("precip_mm")%></td>
+
+											</tr>
+											<%
+											}
+											%>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<div class="card">
+							<div class="card-header" id="headingFour">
+								<h5 class="mb-0">
+									<button class="btn btn-black" data-toggle="collapse"
+										data-target="#collapseFour" aria-expanded="true"
+										aria-controls="#collapseFour">
+										<%=forecastdayArray.optJSONObject(3).optString("date")%>
+									</button>
+								</h5>
+							</div>
+
+							<div id="collapseFour" class="collapse"
+								aria-labelledby="headingFour" data-parent="#accordion">
+								<div class="card-body"
+									style="max-height: 350px; overflow-y: auto;">
+
+									<table
+										class="table table-dark table-bordered table-striped table-hover">
+										<thead>
+											<tr>
+												<th scope="col">Time</th>
+												<th scope="col">Condition</th>
+												<th scope="col">Temperature (°F)</th>
+												<th scope="col">Wind Speed Mph</th>
+												<th scope="col">Humidity</th>
+												<th scope="col">Atmospheric Pressure (in)</th>
+												<th scope="col">Precipitation (mm)</th>
+
+											</tr>
+										</thead>
+										<tbody>
+											<%
+											for (int i = 0; i < forecastdayArray.optJSONObject(3).optJSONArray("hour").length(); i++) {
+											%>
+											<tr>
+												<td><%=forecastdayArray.optJSONObject(3).optJSONArray("hour").optJSONObject(i).getString("time").substring(10)%></td>
+												<td><img style="height: 30px; width: 30px"
+													src=<%=forecastdayArray.optJSONObject(3).optJSONArray("hour").optJSONObject(i).optJSONObject("condition")
+		.getString("icon")%>></td>
+												<td><%=forecastdayArray.optJSONObject(3).optJSONArray("hour").optJSONObject(i).getFloat("temp_f")%></td>
+												<td><%=forecastdayArray.optJSONObject(3).optJSONArray("hour").optJSONObject(i).getFloat("wind_mph")%></td>
+												<td><%=forecastdayArray.optJSONObject(3).optJSONArray("hour").optJSONObject(i).getFloat("humidity")%></td>
+
+												<td><%=forecastdayArray.optJSONObject(3).optJSONArray("hour").optJSONObject(i).getFloat("pressure_in")%></td>
+												<td><%=forecastdayArray.optJSONObject(3).optJSONArray("hour").optJSONObject(i).getFloat("precip_mm")%></td>
+
+											</tr>
+											<%
+											}
+											%>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<div class="card">
+							<div class="card-header" id="headingFive">
+								<h5 class="mb-0">
+									<button class="btn btn-black" data-toggle="collapse"
+										data-target="#collapseFive" aria-expanded="true"
+										aria-controls="#collapseFive">
+										<%=forecastdayArray.optJSONObject(4).optString("date")%>
+									</button>
+								</h5>
+							</div>
+
+							<div id="collapseFive" class="collapse"
+								aria-labelledby="headingFive" data-parent="#accordion">
+								<div class="card-body"
+									style="max-height: 350px; overflow-y: auto;">
+
+									<table
+										class="table table-dark table-bordered table-striped table-hover">
+										<thead>
+											<tr>
+												<th scope="col">Time</th>
+												<th scope="col">Condition</th>
+												<th scope="col">Temperature (°F)</th>
+												<th scope="col">Wind Speed Mph</th>
+												<th scope="col">Humidity</th>
+												<th scope="col">Atmospheric Pressure (in)</th>
+												<th scope="col">Precipitation (mm)</th>
+
+											</tr>
+										</thead>
+										<tbody>
+											<%
+											for (int i = 0; i < forecastdayArray.optJSONObject(4).optJSONArray("hour").length(); i++) {
+											%>
+											<tr>
+												<td><%=forecastdayArray.optJSONObject(4).optJSONArray("hour").optJSONObject(i).getString("time").substring(10)%></td>
+												<td><img style="height: 30px; width: 30px"
+													src=<%=forecastdayArray.optJSONObject(4).optJSONArray("hour").optJSONObject(i).optJSONObject("condition")
+		.getString("icon")%>></td>
+												<td><%=forecastdayArray.optJSONObject(4).optJSONArray("hour").optJSONObject(i).getFloat("temp_f")%></td>
+												<td><%=forecastdayArray.optJSONObject(4).optJSONArray("hour").optJSONObject(i).getFloat("wind_mph")%></td>
+												<td><%=forecastdayArray.optJSONObject(4).optJSONArray("hour").optJSONObject(i).getFloat("humidity")%></td>
+
+												<td><%=forecastdayArray.optJSONObject(4).optJSONArray("hour").optJSONObject(i).getFloat("pressure_in")%></td>
+												<td><%=forecastdayArray.optJSONObject(4).optJSONArray("hour").optJSONObject(i).getFloat("precip_mm")%></td>
+
+											</tr>
+											<%
+											}
+											%>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<!-- Option 2: Tomorrow -->
+						<div class="card">
+							<div class="card-header" id="headingSix">
+								<h5 class="mb-0">
+									<button class="btn btn-black collapsed" data-toggle="collapse"
+										data-target="#collapseSix" aria-expanded="false"
+										aria-controls="#collapseSix">
+										<%=forecastdayArray.optJSONObject(5).optString("date")%></button>
+
+								</h5>
+							</div>
+							<div id="collapseSix" class="collapse"
+								aria-labelledby="headingSix" data-parent="#accordion">
+								<div class="card-body"
+									style="max-height: 350px; overflow-y: auto;">
+									<table
+										class="table table-dark table-bordered table-striped table-hover">
+										<thead>
+											<tr>
+												<th scope="col">Time</th>
+												<th scope="col">Condition</th>
+												<th scope="col">Temperature (°F)</th>
+												<th scope="col">Wind Speed Mph</th>
+												<th scope="col">Humidity</th>
+												<th scope="col">Atmospheric Pressure (in)</th>
+												<th scope="col">Precipitation (mm)</th>
 
 
-										</tr>
-										<%
-										}
-										%>
-									</tbody>
-								</table>
+											</tr>
+										</thead>
+										<tbody>
+											<%
+											for (int i = 0; i < forecastdayArray.optJSONObject(5).optJSONArray("hour").length(); i++) {
+											%>
+											<tr>
+												<td><%=forecastdayArray.optJSONObject(5).optJSONArray("hour").optJSONObject(i).getString("time").substring(10)%></td>
+												<td><img style="height: 30px; width: 30px"
+													src=<%=forecastdayArray.optJSONObject(5).optJSONArray("hour").optJSONObject(i).optJSONObject("condition")
+		.getString("icon")%>></td>
+												<td><%=forecastdayArray.optJSONObject(5).optJSONArray("hour").optJSONObject(i).getFloat("temp_f")%></td>
+												<td><%=forecastdayArray.optJSONObject(5).optJSONArray("hour").optJSONObject(i).getFloat("wind_mph")%></td>
+
+												<td><%=forecastdayArray.optJSONObject(5).optJSONArray("hour").optJSONObject(i).getFloat("humidity")%></td>
+												<td><%=forecastdayArray.optJSONObject(5).optJSONArray("hour").optJSONObject(i).getFloat("pressure_in")%></td>
+												<td><%=forecastdayArray.optJSONObject(5).optJSONArray("hour").optJSONObject(i).getFloat("precip_mm")%></td>
+
+
+											</tr>
+											<%
+											}
+											%>
+										</tbody>
+									</table>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
+				<!-- date -->
 
+
+				<!-- 				<div>
+				<h5>Please enter a date within the next 14 days to view the forecast.</h5>
+
+					<div class="input-group">
+						<input type="text" class="form-control" id="dateFinder"
+							placeholder="Enter Date (MM/DD/YYYY)" name="inputDate">
+						<div class="input-group-append">
+							<button onclick="getValue()" id="dateInputSubmit" class="btn btn-primary" type="submit">Fetch</button>
+						</div>
+						<script>
+						 function getValue() {
+					            
+					            var textFieldValue = document.getElementById('dateFinder').value;
+					           
+					        }
+						
+						</script>
+					</div>
+
+					<div id="accordion">
+
+
+						<div class="card">
+							<div class="card-header" id="headingThree">
+								<h5 class="mb-0">
+									<button class="btn btn-link collapsed" data-toggle="collapse"
+										data-target="#collapseThree" aria-expanded="false"
+										aria-controls="collapseThree">Weather Forecast on</button>
+								</h5>
+							</div>
+							<div id="collapseThree" class="collapse"
+								aria-labelledby="headingThree" data-parent="#accordion">
+								<div class="card-body">Anim pariatur cliche reprehenderit,
+									enim eiusmod high life accusamus terry richardson ad squid. 3
+									wolf moon officia aute, non cupidatat skateboard dolor brunch.
+									Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon
+									tempor, sunt aliqua put a bird on it squid single-origin coffee
+									nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica,
+									craft beer labore wes anderson cred nesciunt sapiente ea
+									proident. Ad vegan excepteur butcher vice lomo. Leggings
+									occaecat craft beer farm-to-table, raw denim aesthetic synth
+									nesciunt you probably haven't heard of them accusamus labore
+									sustainable VHS.</div>
+							</div>
+						</div>
+					</div>
+				</div> -->
+				<!--alert  -->
+				<div>
+					<%
+					if (alerts.getJSONArray("alert").length() == 0) {
+					%>
+					<div class="alert alert-success" role="alert">
+						<h4 class="alert-heading">Alerts!</h4>
+						<p>Currently, there are no alerts to display. Please check
+							back later for updates.</p>
+						<hr>
+						<p class="mb-0">Have a good day!</p>
+					</div>
+					<%
+					} else {
+					%>
+					<div class="alert alert-danger" role="alert"
+						style="height: 200px; overflow-y: scroll">
+						<h4 class="alert-heading">Alerts!</h4>
+						<h5><%=alerts.optJSONArray("alert").getJSONObject(0).getString("headline")%></h5>
+						<hr>
+						<p class="mb-0">
+							Category:
+							<%=alerts.optJSONArray("alert").optJSONObject(0).getString("category")%></p>
+						<br>
+						<p class="mb-0">
+							Effective:
+							<%=alerts.optJSONArray("alert").optJSONObject(0).getString("effective").substring(0, 10)%></p>
+						<br>
+						<p class="mb-0">
+							Expires:
+							<%=alerts.optJSONArray("alert").optJSONObject(0).getString("expires").substring(0, 10)%></p>
+						<br>
+						<p class="mb-0">
+							Description:
+							<%=alerts.optJSONArray("alert").optJSONObject(0).getString("desc")%></p>
+					</div>
+					<%
+					}
+					%>
+				</div>
 			</div>
 		</div>
 
 	</div>
 	<%
-		} else {
-		out.println("Error: Location or current weather data not found.");
-		}
-		} else {
-		out.println("Error: Weather data not found.");
-		}
-		} else {
-		out.println("Error: User data not found.");
-		}
-		%>
+	} else {
+	out.println("Error: Location or current weather data not found.");
+	}
+	} else {
+	out.println("Error: Weather data not found.");
+	}
+	} else {
+	out.println("Error: User data not found.");
+	}
+	%>
 	</div>
 
 	<!-- Bootstrap JS and jQuery (needed for navbar toggling) -->
