@@ -13,6 +13,7 @@ import mypack.model.WeatherData;
 import mypack.service.WeatherService;
 import mypack.service.UserService;
 import mypack.service.LocationService;
+import mypack.service.UserServiceImpl;
 import org.json.JSONObject;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -24,8 +25,8 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("password");
 
         try {
-            UserService userService = new UserService();
-            UserModel user = userService.findUserByEmail(email);
+            UserService userService = new UserServiceImpl();
+            UserModel user = userService.getUserByEmail(email);
 
             if (user != null && BCrypt.checkpw(password, user.getPassword())) {
                 if (user.getLocation().isEmpty()) {
