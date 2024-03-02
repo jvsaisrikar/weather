@@ -70,7 +70,7 @@ body {
 
 .left-half, .middle, .right-half {
 	padding: 20px;
-	height: 90vh;
+	height: 85vh;
 }
 
 .details-box {
@@ -86,7 +86,7 @@ body {
 	/* background-image: url('mr.gif'); */
 	/* Replace 'night.jpg' with the path to your night background image */
 	background-size: cover;
-	max-height: 85vh;
+	max-height: 83vh;
 	background-position: center;
 	border-radius: 25px;
 }
@@ -688,58 +688,64 @@ body {
 								</div>
 							</div>
 						</div>
+						<div class="card">
+							<div class="card-header" id="headingSeven">
+								<h5 class="mb-0">
+									<button class="btn btn-black collapsed" data-toggle="collapse"
+											data-target="#collapseSeven" aria-expanded="false"
+											aria-controls="#collapseSeven">
+										<%=forecastdayArray.optJSONObject(6).optString("date")%></button>
+
+								</h5>
+							</div>
+							<div id="collapseSeven" class="collapse"
+								 aria-labelledby="headingSix" data-parent="#accordion">
+								<div class="card-body"
+									 style="max-height: 350px; overflow-y: auto;">
+									<table
+											class="table table-dark table-bordered table-striped table-hover">
+										<thead>
+										<tr>
+											<th scope="col">Time</th>
+											<th scope="col">Condition</th>
+											<th scope="col">Temperature (°F)</th>
+											<th scope="col">Wind Speed Mph</th>
+											<th scope="col">Humidity</th>
+											<th scope="col">Atmospheric Pressure (in)</th>
+											<th scope="col">Precipitation (mm)</th>
+
+
+										</tr>
+										</thead>
+										<tbody>
+										<%
+											for (int i = 0; i < forecastdayArray.optJSONObject(6).optJSONArray("hour").length(); i++) {
+										%>
+										<tr>
+											<td><%=forecastdayArray.optJSONObject(6).optJSONArray("hour").optJSONObject(i).getString("time").substring(10)%></td>
+											<td><img style="height: 30px; width: 30px"
+													 src=<%=forecastdayArray.optJSONObject(6).optJSONArray("hour").optJSONObject(i).optJSONObject("condition")
+		.getString("icon")%>></td>
+											<td><%=forecastdayArray.optJSONObject(6).optJSONArray("hour").optJSONObject(i).getFloat("temp_f")%></td>
+											<td><%=forecastdayArray.optJSONObject(6).optJSONArray("hour").optJSONObject(i).getFloat("wind_mph")%></td>
+
+											<td><%=forecastdayArray.optJSONObject(6).optJSONArray("hour").optJSONObject(i).getFloat("humidity")%></td>
+											<td><%=forecastdayArray.optJSONObject(6).optJSONArray("hour").optJSONObject(i).getFloat("pressure_in")%></td>
+											<td><%=forecastdayArray.optJSONObject(6).optJSONArray("hour").optJSONObject(i).getFloat("precip_mm")%></td>
+
+
+										</tr>
+										<%
+											}
+										%>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 				<!-- date -->
-
-
-				<!-- 				<div>
-				<h5>Please enter a date within the next 14 days to view the forecast.</h5>
-
-					<div class="input-group">
-						<input type="text" class="form-control" id="dateFinder"
-							placeholder="Enter Date (MM/DD/YYYY)" name="inputDate">
-						<div class="input-group-append">
-							<button onclick="getValue()" id="dateInputSubmit" class="btn btn-primary" type="submit">Fetch</button>
-						</div>
-						<script>
-						 function getValue() {
-					            
-					            var textFieldValue = document.getElementById('dateFinder').value;
-					           
-					        }
-						
-						</script>
-					</div>
-
-					<div id="accordion">
-
-
-						<div class="card">
-							<div class="card-header" id="headingThree">
-								<h5 class="mb-0">
-									<button class="btn btn-link collapsed" data-toggle="collapse"
-										data-target="#collapseThree" aria-expanded="false"
-										aria-controls="collapseThree">Weather Forecast on</button>
-								</h5>
-							</div>
-							<div id="collapseThree" class="collapse"
-								aria-labelledby="headingThree" data-parent="#accordion">
-								<div class="card-body">Anim pariatur cliche reprehenderit,
-									enim eiusmod high life accusamus terry richardson ad squid. 3
-									wolf moon officia aute, non cupidatat skateboard dolor brunch.
-									Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon
-									tempor, sunt aliqua put a bird on it squid single-origin coffee
-									nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica,
-									craft beer labore wes anderson cred nesciunt sapiente ea
-									proident. Ad vegan excepteur butcher vice lomo. Leggings
-									occaecat craft beer farm-to-table, raw denim aesthetic synth
-									nesciunt you probably haven't heard of them accusamus labore
-									sustainable VHS.</div>
-							</div>
-						</div>
-					</div>
-				</div> -->
 				<!--alert  -->
 				<div>
 					<%
