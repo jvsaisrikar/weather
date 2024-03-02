@@ -24,7 +24,7 @@ public class SearchServlet extends HttpServlet {
                 location = LocationService.getCurrentLocation();
             }
             HttpSession session = request.getSession();
-            String username = (String) session.getAttribute("username")
+            String username = (String) session.getAttribute("username");
             JSONObject weatherForecastDataJson = weatherService.getWeatherForecastData(location);
             // Create a JSON object with username and weather details
             JSONObject json = new JSONObject();
