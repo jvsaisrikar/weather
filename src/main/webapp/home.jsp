@@ -380,7 +380,7 @@ body {
 												<th scope="col">Time</th>
 												<th scope="col">Condition</th>
 												<th scope="col">Temperature (°F)</th>
-												<th scope="col">Wind Speed Mph</th>
+												<th scope="col">Wind Speed (Mph)</th>
 												<th scope="col">Humidity</th>
 												<th scope="col">Atmospheric Pressure (in)</th>
 												<th scope="col">Precipitation (mm)</th>
@@ -435,7 +435,7 @@ body {
 												<th scope="col">Time</th>
 												<th scope="col">Condition</th>
 												<th scope="col">Temperature (°F)</th>
-												<th scope="col">Wind Speed Mph</th>
+												<th scope="col">Wind Speed (Mph)</th>
 												<th scope="col">Humidity</th>
 												<th scope="col">Atmospheric Pressure (in)</th>
 												<th scope="col">Precipitation (mm)</th>
@@ -490,7 +490,7 @@ body {
 												<th scope="col">Time</th>
 												<th scope="col">Condition</th>
 												<th scope="col">Temperature (°F)</th>
-												<th scope="col">Wind Speed Mph</th>
+												<th scope="col">Wind Speed (Mph)</th>
 												<th scope="col">Humidity</th>
 												<th scope="col">Atmospheric Pressure (in)</th>
 												<th scope="col">Precipitation (mm)</th>
@@ -545,7 +545,7 @@ body {
 												<th scope="col">Time</th>
 												<th scope="col">Condition</th>
 												<th scope="col">Temperature (°F)</th>
-												<th scope="col">Wind Speed Mph</th>
+												<th scope="col">Wind Speed (Mph)</th>
 												<th scope="col">Humidity</th>
 												<th scope="col">Atmospheric Pressure (in)</th>
 												<th scope="col">Precipitation (mm)</th>
@@ -600,7 +600,7 @@ body {
 												<th scope="col">Time</th>
 												<th scope="col">Condition</th>
 												<th scope="col">Temperature (°F)</th>
-												<th scope="col">Wind Speed Mph</th>
+												<th scope="col">Wind Speed (Mph)</th>
 												<th scope="col">Humidity</th>
 												<th scope="col">Atmospheric Pressure (in)</th>
 												<th scope="col">Precipitation (mm)</th>
@@ -654,7 +654,7 @@ body {
 												<th scope="col">Time</th>
 												<th scope="col">Condition</th>
 												<th scope="col">Temperature (°F)</th>
-												<th scope="col">Wind Speed Mph</th>
+												<th scope="col">Wind Speed (Mph)</th>
 												<th scope="col">Humidity</th>
 												<th scope="col">Atmospheric Pressure (in)</th>
 												<th scope="col">Precipitation (mm)</th>
@@ -709,7 +709,7 @@ body {
 											<th scope="col">Time</th>
 											<th scope="col">Condition</th>
 											<th scope="col">Temperature (°F)</th>
-											<th scope="col">Wind Speed Mph</th>
+											<th scope="col">Wind Speed (Mph)</th>
 											<th scope="col">Humidity</th>
 											<th scope="col">Atmospheric Pressure (in)</th>
 											<th scope="col">Precipitation (mm)</th>
