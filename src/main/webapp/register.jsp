@@ -243,12 +243,12 @@ h1>a {
 				<h2 class="login-title">Create an Account</h2>
 				<form action="RegisterServlet" method="post">
 					<div class="form-group">
-						<label for="email" class="sr-only">Email</label> <input
+						<label for="email" class="sr-only">Email</label> <input required
 							type="email" name="email" id="email" class="form-control"
 							placeholder="Email">
 					</div>
 					<div class="form-group mb-3">
-						<label for="password" class="sr-only">Password</label> <input
+						<label for="password" class="sr-only">Password</label> <input required
 							type="password" name="password" id="password"
 							class="form-control" placeholder="Password">
 					</div>

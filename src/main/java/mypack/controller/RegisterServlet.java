@@ -13,17 +13,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import org.mindrot.jbcrypt.BCrypt;
 
 @WebServlet("/RegisterServlet")
 public class RegisterServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+    private static long serialVersionUID = 1L;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        String hashedPassword = BCrypt.hashpw(request.getParameter("password"), BCrypt.gensalt());
         // Create a new UserModel object from request parameters
         UserModel user = new UserModel(
                 request.getParameter("email"),
-                request.getParameter("password"),
+                hashedPassword,
                 request.getParameter("location")
         );
 
@@ -54,8 +55,11 @@ public class RegisterServlet extends HttpServlet {
                 // Handle other write errors
                 throw new ServletException(e);
             }
+        } catch (Exception e) {
+            // General error handling
+            response.sendRedirect("error.jsp");
         } finally {
-            // Always close the MongoDB client
+            // closing MongoDB Client
             if (mongoClient != null) {
                 mongoClient.close();
             }
